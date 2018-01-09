@@ -6,7 +6,7 @@
 
 ## Usage
 
-Import the package and activate the plugin where you initialise your Vue instance
+Import the package and activate the plugin
 
 ```javascript
 import Vue from "vue"
@@ -19,7 +19,7 @@ new Vue({
 })
 ```
 
-In your markup, make sure to wrap your entire page-content
+In your markup, make sure to wrap your entire page content
 
 ```html
 <auto-scroll :loop="true" :loop-up="false">
