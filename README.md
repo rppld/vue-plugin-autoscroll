@@ -1,6 +1,6 @@
 # vue-plugin-autoscroll
 
-[View Demo](https://cdn.rawgit.com/rppld/vue-plugin-autoscroll/32ac64a1/examples/index.html)
+[View Demo](https://cdn.rawgit.com/rppld/vue-plugin-autoscroll/1addcb83/examples/index.html)
 
 ## Installation
 
