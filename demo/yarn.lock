@@ -5133,9 +5133,9 @@ vue-loader@^13.0.5:
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.6.0"
 
-vue-plugin-autoscroll@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/vue-plugin-autoscroll/-/vue-plugin-autoscroll-0.1.0.tgz#e25356f5e3a80f38c4061d9deb3a3d8c7187d5a8"
+vue-plugin-autoscroll@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/vue-plugin-autoscroll/-/vue-plugin-autoscroll-0.1.1.tgz#3b920e59486ebec9c7a469756bf86c91b4e00f05"
 
 vue-style-loader@^3.0.0:
   version "3.0.3"

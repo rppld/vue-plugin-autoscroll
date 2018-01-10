@@ -1,8 +1,11 @@
 {
   "name": "vue-plugin-autoscroll",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Vue component to automatically scroll (and optionally loop) containing elements.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules --display-error-details"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rppld/vue-plugin-autoscroll.git"
@@ -15,6 +18,25 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/rppld/vue-plugin-autoscroll/issues"
+  },
+  "peerDependencies": {
+    "vue": "^2.5.11"
+  },
+  "devDependencies": {
+    "babel-core": "^6.0.0",
+    "babel-loader": "^6.0.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "cross-env": "^3.0.0",
+    "css-loader": "^0.25.0",
+    "file-loader": "^0.9.0",
+    "node-sass": "^4.5.0",
+    "sass-loader": "^5.0.1",
+    "vue": "^2.0.0",
+    "vue-loader": "^11.1.4",
+    "vue-template-compiler": "^2.0.0",
+    "webpack": "^2.2.0",
+    "webpack-dev-server": "^2.2.0"
   },
   "homepage": "https://github.com/rppld/vue-plugin-autoscroll#readme"
 }
