@@ -1,5 +1,7 @@
 # vue-plugin-autoscroll
 
+[View Demo](https://cdn.rawgit.com/rppld/vue-plugin-autoscroll/32ac64a1/examples/index.html)
+
 ## Installation
 
 `npm install --save vue-plugin-autoscroll`
@@ -33,6 +35,16 @@ In your markup, make sure to wrap your entire page content
     3
   </section>
 </auto-scroll>
+```
+
+## Removing The Scrollbar
+
+The following works for WebKit browsers
+
+```css
+::-webkit-scrollbar { 
+  display: none; 
+}
 ```
 
 ## Optional Props
