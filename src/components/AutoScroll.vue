@@ -24,6 +24,7 @@ export default {
       lastChild: null,
       children: null,
       clones: [],
+      touchStart: null,
       scrollUpAF: null,
       scrollDownAF: null
     }
@@ -33,39 +34,50 @@ export default {
     this.children = Array.from(this.$el.childNodes)
     this.firstChild = this.children[0]
     this.lastChild = this.children[this.children.length - 1]
+
     if (this.loop) {
       this.cloneChildNodes(this.$el)
     }
-    this.startAutoScroll()
 
-    const wheel =
-      "onwheel" in document.createElement("div")
-        ? "wheel" // Modern browsers support "wheel"
-        : document.onmousewheel !== undefined
-          ? "mousewheel" // Webkit and IE support at least "mousewheel"
-          : "DOMMouseScroll" // let's assume that remaining browsers are older Firefox
+    if (!this.isTouchDevice()) {
+      this.startAutoScroll()
 
-    window.addEventListener(wheel, event => {
-      this.stopAutoScroll()
+      const wheel =
+        "onwheel" in document.createElement("div")
+          ? "wheel" // Modern browsers support "wheel"
+          : document.onmousewheel !== undefined
+            ? "mousewheel" // Webkit and IE support at least "mousewheel"
+            : "DOMMouseScroll" // let's assume that remaining browsers are older Firefox
 
-      if (event.deltaY < 0) {
-        this.scrollDown = false
-        this.startAutoScroll()
-      } else {
-        this.scrollDown = true
-        this.startAutoScroll()
-      }
-    })
+      window.addEventListener(wheel, e => {
+        this.stopAutoScroll()
 
-    // const observer = new IntersectionObserver((entries, observer) => {
-    //   const entry = entries[0]
-    //   console.log(entry)
-    //   if (!entry.isIntersecting && entry.boundingClientRect.y < 0) {
-    //     window.scrollTo(0, 0)
-    //   }
-    // })
+        if (e.deltaY < 0) {
+          this.scrollDown = false
+          this.startAutoScroll()
+        } else {
+          this.scrollDown = true
+          this.startAutoScroll()
+        }
+      })
 
-    // observer.observe(this.lastChild)
+      window.addEventListener("touchstart", e => {
+        this.touchStart = e.touches[0].clientY
+      })
+
+      window.addEventListener("touchend", e => {
+        const touchEnd = e.changedTouches[0].clientY
+        this.stopAutoScroll()
+
+        if (this.touchStart < touchEnd - 5) {
+          this.scrollDown = false
+          this.startAutoScroll()
+        } else if (this.touchStart > touchEnd + 5) {
+          this.scrollDown = true
+          this.startAutoScroll()
+        }
+      })
+    }
 
     window.addEventListener("scroll", this.handleScroll)
   },
@@ -78,6 +90,13 @@ export default {
     autoScrollUp () {
       window.scrollBy(0, -1)
       this.scrollUpAF = window.requestAnimationFrame(this.autoScrollUp)
+    },
+    isTouchDevice () {
+      return (
+        "ontouchstart" in window ||
+        navigator.MaxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      )
     },
     autoScrollDown () {
       window.scrollBy(0, 1)

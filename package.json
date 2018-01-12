@@ -20,7 +20,7 @@
     "url": "https://github.com/rppld/vue-plugin-autoscroll/issues"
   },
   "peerDependencies": {
-    "vue": "^2.5.11"
+    "vue": "^2.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.0.0",

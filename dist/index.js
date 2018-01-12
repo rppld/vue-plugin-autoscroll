@@ -4,9 +4,9 @@
 	else if(typeof define === 'function' && define.amd)
 		define([], factory);
 	else if(typeof exports === 'object')
-		exports["vue-plugin-autoscroll"] = factory();
+		exports["vuePluginAutoscroll"] = factory();
 	else
-		root["vue-plugin-autoscroll"] = factory();
+		root["vuePluginAutoscroll"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -130,6 +130,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       lastChild: null,
       children: null,
       clones: [],
+      touchStart: null,
       scrollUpAF: null,
       scrollDownAF: null
     };
@@ -140,36 +141,47 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     this.children = Array.from(this.$el.childNodes);
     this.firstChild = this.children[0];
     this.lastChild = this.children[this.children.length - 1];
+
     if (this.loop) {
       this.cloneChildNodes(this.$el);
     }
-    this.startAutoScroll();
 
-    var wheel = "onwheel" in document.createElement("div") ? "wheel" // Modern browsers support "wheel"
-    : document.onmousewheel !== undefined ? "mousewheel" // Webkit and IE support at least "mousewheel"
-    : "DOMMouseScroll"; // let's assume that remaining browsers are older Firefox
+    if (!this.isTouchDevice()) {
+      this.startAutoScroll();
 
-    window.addEventListener(wheel, function (event) {
-      _this.stopAutoScroll();
+      var wheel = "onwheel" in document.createElement("div") ? "wheel" // Modern browsers support "wheel"
+      : document.onmousewheel !== undefined ? "mousewheel" // Webkit and IE support at least "mousewheel"
+      : "DOMMouseScroll"; // let's assume that remaining browsers are older Firefox
 
-      if (event.deltaY < 0) {
-        _this.scrollDown = false;
-        _this.startAutoScroll();
-      } else {
-        _this.scrollDown = true;
-        _this.startAutoScroll();
-      }
-    });
+      window.addEventListener(wheel, function (e) {
+        _this.stopAutoScroll();
 
-    // const observer = new IntersectionObserver((entries, observer) => {
-    //   const entry = entries[0]
-    //   console.log(entry)
-    //   if (!entry.isIntersecting && entry.boundingClientRect.y < 0) {
-    //     window.scrollTo(0, 0)
-    //   }
-    // })
+        if (e.deltaY < 0) {
+          _this.scrollDown = false;
+          _this.startAutoScroll();
+        } else {
+          _this.scrollDown = true;
+          _this.startAutoScroll();
+        }
+      });
 
-    // observer.observe(this.lastChild)
+      window.addEventListener("touchstart", function (e) {
+        _this.touchStart = e.touches[0].clientY;
+      });
+
+      window.addEventListener("touchend", function (e) {
+        var touchEnd = e.changedTouches[0].clientY;
+        _this.stopAutoScroll();
+
+        if (_this.touchStart < touchEnd - 5) {
+          _this.scrollDown = false;
+          _this.startAutoScroll();
+        } else if (_this.touchStart > touchEnd + 5) {
+          _this.scrollDown = true;
+          _this.startAutoScroll();
+        }
+      });
+    }
 
     window.addEventListener("scroll", this.handleScroll);
   },
@@ -183,6 +195,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     autoScrollUp: function autoScrollUp() {
       window.scrollBy(0, -1);
       this.scrollUpAF = window.requestAnimationFrame(this.autoScrollUp);
+    },
+    isTouchDevice: function isTouchDevice() {
+      return "ontouchstart" in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
     },
     autoScrollDown: function autoScrollDown() {
       window.scrollBy(0, 1);
@@ -238,13 +253,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_AutoScroll_vue__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_AutoScroll_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_AutoScroll_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_AutoScroll__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_AutoScroll___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_AutoScroll__);
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   install: function install(Vue) {
-    Vue.component("auto-scroll", __WEBPACK_IMPORTED_MODULE_0__components_AutoScroll_vue___default.a);
+    Vue.component("auto-scroll", __WEBPACK_IMPORTED_MODULE_0__components_AutoScroll___default.a);
   }
 });
 

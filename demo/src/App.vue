@@ -4,7 +4,7 @@
     <section>2</section>
     <section>3</section>
     <section>4</section>
-    <section>4</section>
+    <section>5</section>
   </auto-scroll>
 </template>
 
@@ -12,9 +12,7 @@
 export default {
   name: "App",
   data () {
-    return {
-      msg: "Welcome to Your Vue.js App"
-    }
+    return {}
   }
 }
 </script>

@@ -1,4 +1,4 @@
-import AutoScroll from "./components/AutoScroll.vue"
+import AutoScroll from "./components/AutoScroll"
 
 export default {
   install (Vue) {

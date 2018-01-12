@@ -7,7 +7,7 @@ module.exports = {
     path: path.resolve(__dirname, "./dist"),
     publicPath: "/dist/",
     filename: "index.js",
-    library: "vue-plugin-autoscroll",
+    library: "vuePluginAutoscroll",
     libraryTarget: "umd"
   },
   module: {
@@ -35,7 +35,8 @@ module.exports = {
   resolve: {
     alias: {
       "vue$": "vue/dist/vue.esm.js"
-    }
+    },
+    extensions: ["*", ".js", ".vue", ".json"]
   },
   devServer: {
     historyApiFallback: true,
@@ -47,9 +48,7 @@ module.exports = {
   devtool: "#source-map",
   plugins: [
     new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: "\"production\""
-      }
+      "process.env.NODE_ENV": JSON.stringify("production")
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true
