@@ -1,6 +1,6 @@
 {
   "name": "vue-plugin-autoscroll",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A Vue component to automatically scroll (and optionally loop) containing elements.",
   "main": "dist/index.js",
   "scripts": {
