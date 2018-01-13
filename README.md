@@ -24,17 +24,19 @@ new Vue({
 In your markup, make sure to wrap your entire page content
 
 ```html
-<auto-scroll :loop="true" :loop-up="false">
-  <section>
-    1
-  </section>
-  <section>
-    2
-  </section>
-  <section>
-    3
-  </section>
-</auto-scroll>
+<div id="app">
+  <auto-scroll :loop="true" :loop-up="false" :slow="false">
+    <section>
+      1
+    </section>
+    <section>
+      2
+    </section>
+    <section>
+      3
+    </section>
+  </auto-scroll>
+</div>
 ```
 
 ## Removing The Scrollbar
