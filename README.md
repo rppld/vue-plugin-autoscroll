@@ -53,6 +53,7 @@ The following works for WebKit browsers
 | ------------- |:-------------:|:-------------:|
 | loop          | Boolean       | true          |
 | loopUp        | Boolean       | false         |
+| slow          | Boolean       | false         |
 
 ## License
 

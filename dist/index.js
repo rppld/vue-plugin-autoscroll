@@ -120,6 +120,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     loopUp: {
       default: false,
       type: Boolean
+    },
+    slow: {
+      default: false,
+      type: Boolean
     }
   },
 
@@ -130,7 +134,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       lastChild: null,
       children: null,
       clones: [],
-      touchStart: null,
+      fps: 30,
+      then: Date.now(),
       scrollUpAF: null,
       scrollDownAF: null
     };
@@ -164,23 +169,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           _this.startAutoScroll();
         }
       });
-
-      window.addEventListener("touchstart", function (e) {
-        _this.touchStart = e.touches[0].clientY;
-      });
-
-      window.addEventListener("touchend", function (e) {
-        var touchEnd = e.changedTouches[0].clientY;
-        _this.stopAutoScroll();
-
-        if (_this.touchStart < touchEnd - 5) {
-          _this.scrollDown = false;
-          _this.startAutoScroll();
-        } else if (_this.touchStart > touchEnd + 5) {
-          _this.scrollDown = true;
-          _this.startAutoScroll();
-        }
-      });
     }
 
     window.addEventListener("scroll", this.handleScroll);
@@ -188,19 +176,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
   methods: {
+    throttle: function throttle(callback) {
+      var now = Date.now();
+      var delta = now - this.then;
+      var interval = 1000 / this.fps;
+
+      if (delta > interval) {
+        this.then = now - delta % interval;
+        callback();
+      }
+    },
     stopAutoScroll: function stopAutoScroll() {
       window.cancelAnimationFrame(this.scrollUpAF);
       window.cancelAnimationFrame(this.scrollDownAF);
     },
     autoScrollUp: function autoScrollUp() {
-      window.scrollBy(0, -1);
+      this.slow ? this.throttle(function () {
+        return window.scrollBy(0, -1);
+      }) : window.scrollBy(0, -1);
       this.scrollUpAF = window.requestAnimationFrame(this.autoScrollUp);
     },
-    isTouchDevice: function isTouchDevice() {
-      return "ontouchstart" in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
-    },
     autoScrollDown: function autoScrollDown() {
-      window.scrollBy(0, 1);
+      this.slow ? this.throttle(function () {
+        return window.scrollBy(0, 1);
+      }) : window.scrollBy(0, 1);
       this.scrollDownAF = window.requestAnimationFrame(this.autoScrollDown);
     },
     startAutoScroll: function startAutoScroll() {
@@ -214,6 +213,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     isAboveViewport: function isAboveViewport(el) {
       var rect = el.getBoundingClientRect();
       return !rect.top <= 0;
+    },
+    isTouchDevice: function isTouchDevice() {
+      return "ontouchstart" in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
     },
     resetScrollDown: function resetScrollDown() {
       if (this.isFullyAboveViewport(this.lastChild)) {

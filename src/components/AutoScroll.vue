@@ -14,6 +14,10 @@ export default {
     loopUp: {
       default: false,
       type: Boolean
+    },
+    slow: {
+      default: false,
+      type: Boolean
     }
   },
 
@@ -24,7 +28,8 @@ export default {
       lastChild: null,
       children: null,
       clones: [],
-      touchStart: null,
+      fps: 30,
+      then: Date.now(),
       scrollUpAF: null,
       scrollDownAF: null
     }
@@ -60,46 +65,36 @@ export default {
           this.startAutoScroll()
         }
       })
-
-      window.addEventListener("touchstart", e => {
-        this.touchStart = e.touches[0].clientY
-      })
-
-      window.addEventListener("touchend", e => {
-        const touchEnd = e.changedTouches[0].clientY
-        this.stopAutoScroll()
-
-        if (this.touchStart < touchEnd - 5) {
-          this.scrollDown = false
-          this.startAutoScroll()
-        } else if (this.touchStart > touchEnd + 5) {
-          this.scrollDown = true
-          this.startAutoScroll()
-        }
-      })
     }
 
     window.addEventListener("scroll", this.handleScroll)
   },
 
   methods: {
+    throttle (callback) {
+      const now = Date.now()
+      const delta = now - this.then
+      const interval = 1000 / this.fps
+
+      if (delta > interval) {
+        this.then = now - delta % interval
+        callback()
+      }
+    },
     stopAutoScroll () {
       window.cancelAnimationFrame(this.scrollUpAF)
       window.cancelAnimationFrame(this.scrollDownAF)
     },
     autoScrollUp () {
-      window.scrollBy(0, -1)
+      this.slow
+        ? this.throttle(() => window.scrollBy(0, -1))
+        : window.scrollBy(0, -1)
       this.scrollUpAF = window.requestAnimationFrame(this.autoScrollUp)
     },
-    isTouchDevice () {
-      return (
-        "ontouchstart" in window ||
-        navigator.MaxTouchPoints > 0 ||
-        navigator.msMaxTouchPoints > 0
-      )
-    },
     autoScrollDown () {
-      window.scrollBy(0, 1)
+      this.slow
+        ? this.throttle(() => window.scrollBy(0, 1))
+        : window.scrollBy(0, 1)
       this.scrollDownAF = window.requestAnimationFrame(this.autoScrollDown)
     },
     startAutoScroll () {
@@ -113,6 +108,13 @@ export default {
     isAboveViewport (el) {
       const rect = el.getBoundingClientRect()
       return !rect.top <= 0
+    },
+    isTouchDevice () {
+      return (
+        "ontouchstart" in window ||
+        navigator.MaxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      )
     },
     resetScrollDown () {
       if (this.isFullyAboveViewport(this.lastChild)) {
