@@ -135,6 +135,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       children: null,
       clones: [],
       fps: 30,
+      ts: null,
       then: Date.now(),
       scrollUpAF: null,
       scrollDownAF: null
@@ -161,15 +162,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       window.addEventListener(wheel, function (e) {
         _this.stopAutoScroll();
 
-        if (e.deltaY < 0) {
-          _this.scrollDown = false;
+        if (e.deltaY > 0) {
+          // Scroll down
+          _this.scrollDown = true;
           _this.startAutoScroll();
         } else {
-          _this.scrollDown = true;
+          // Scroll up
+          _this.scrollDown = false;
           _this.startAutoScroll();
         }
       });
     }
+
+    window.addEventListener("touchstart", function (e) {
+      _this.ts = e.touches[0].clientY;
+    });
+
+    window.addEventListener("touchmove", function (e) {
+      var te = e.changedTouches[0].clientY;
+      if (_this.ts > te) {
+        // Scroll down
+        _this.scrollDown = true;
+      } else {
+        // Scroll up
+        _this.scrollDown = false;
+      }
+    });
 
     window.addEventListener("scroll", this.handleScroll);
   },
@@ -185,6 +203,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         this.then = now - delta % interval;
         callback();
       }
+    },
+    isTouchDevice: function isTouchDevice() {
+      return "ontouchstart" in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
     },
     stopAutoScroll: function stopAutoScroll() {
       window.cancelAnimationFrame(this.scrollUpAF);
@@ -213,9 +234,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     isAboveViewport: function isAboveViewport(el) {
       var rect = el.getBoundingClientRect();
       return !rect.top <= 0;
-    },
-    isTouchDevice: function isTouchDevice() {
-      return "ontouchstart" in window || navigator.MaxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
     },
     resetScrollDown: function resetScrollDown() {
       if (this.isFullyAboveViewport(this.lastChild)) {

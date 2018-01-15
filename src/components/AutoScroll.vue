@@ -29,6 +29,7 @@ export default {
       children: null,
       clones: [],
       fps: 30,
+      ts: null,
       then: Date.now(),
       scrollUpAF: null,
       scrollDownAF: null
@@ -57,15 +58,32 @@ export default {
       window.addEventListener(wheel, e => {
         this.stopAutoScroll()
 
-        if (e.deltaY < 0) {
-          this.scrollDown = false
+        if (e.deltaY > 0) {
+          // Scroll down
+          this.scrollDown = true
           this.startAutoScroll()
         } else {
-          this.scrollDown = true
+          // Scroll up
+          this.scrollDown = false
           this.startAutoScroll()
         }
       })
     }
+
+    window.addEventListener("touchstart", e => {
+      this.ts = e.touches[0].clientY
+    })
+
+    window.addEventListener("touchmove", e => {
+      const te = e.changedTouches[0].clientY
+      if (this.ts > te) {
+        // Scroll down
+        this.scrollDown = true
+      } else {
+        // Scroll up
+        this.scrollDown = false
+      }
+    })
 
     window.addEventListener("scroll", this.handleScroll)
   },
@@ -80,6 +98,13 @@ export default {
         this.then = now - delta % interval
         callback()
       }
+    },
+    isTouchDevice () {
+      return (
+        "ontouchstart" in window ||
+        navigator.MaxTouchPoints > 0 ||
+        navigator.msMaxTouchPoints > 0
+      )
     },
     stopAutoScroll () {
       window.cancelAnimationFrame(this.scrollUpAF)
@@ -108,13 +133,6 @@ export default {
     isAboveViewport (el) {
       const rect = el.getBoundingClientRect()
       return !rect.top <= 0
-    },
-    isTouchDevice () {
-      return (
-        "ontouchstart" in window ||
-        navigator.MaxTouchPoints > 0 ||
-        navigator.msMaxTouchPoints > 0
-      )
     },
     resetScrollDown () {
       if (this.isFullyAboveViewport(this.lastChild)) {
